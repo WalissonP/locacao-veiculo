@@ -1,6 +1,8 @@
 package com.locadora.sql;
 
 import com.locadora.config.DatabaseConnection;
+import com.locadora.exception.GerenciadorDeErros;
+import com.locadora.exception.Validador;
 import com.locadora.model.Veiculo;
 
 import java.sql.*;
@@ -39,4 +41,15 @@ public class VeiculoDAO {
         }
         return veiculos;
     }
+
+    public void inserir(Veiculo veiculo) {
+    try {
+        // Valida os dados do veículo
+        Validador.validarVeiculo(veiculo);
+    } catch (Exception e) {
+        // Traduz o erro (seja de validação, formato ou duplicidade de placa)
+        String mensagemAmigavel = GerenciadorDeErros.tratarExcecao(e);
+        throw new RuntimeException(mensagemAmigavel);
+    }
+}
 }

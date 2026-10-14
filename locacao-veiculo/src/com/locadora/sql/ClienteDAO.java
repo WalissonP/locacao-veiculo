@@ -1,6 +1,8 @@
 package com.locadora.sql;
 
 import com.locadora.config.DatabaseConnection;
+import com.locadora.exception.GerenciadorDeErros;
+import com.locadora.exception.Validador;
 import com.locadora.model.Cliente;
 
 import java.sql.*;
@@ -37,4 +39,19 @@ public class ClienteDAO {
         }
         return clientes;
     }
+
+
+    public void inserir(Cliente cliente) {
+        try {
+            // Valida os dados antes de mandar para o banco
+            Validador.validarCliente(cliente);
+        } catch (Exception e) {
+            //  Captura qualquer erro (seja de validação ou de SQL como CPF duplicado)
+            // e converte para uma mensagem amigável
+            String mensagem = GerenciadorDeErros.tratarExcecao(e);
+            throw new RuntimeException(mensagem);
+        }
+    }
+
+    
 }

@@ -1,6 +1,8 @@
 package com.locadora.sql;
 
 import com.locadora.config.DatabaseConnection;
+import com.locadora.exception.GerenciadorDeErros;
+import com.locadora.exception.Validador;
 import com.locadora.model.Locacao;
 import com.locadora.relatorioDados.RelatorioDuracao;
 import com.locadora.relatorioDados.RelatorioModelo;
@@ -72,4 +74,16 @@ public class LocacaoDAO {
         }
         return lista;
     }
+
+    public void inserir(Locacao locacao) {
+    try {
+        // Valida as regras de datas da locação
+        Validador.validarLocacao(locacao);
+        // (Opcional/Se houver) Verificar se o veículo está disponível antes de alugar
+    } catch (Exception e) {
+        // Traduz qualquer erro ocorrido no processo de locação
+        String mensagemAmigavel = GerenciadorDeErros.tratarExcecao(e);
+        throw new RuntimeException(mensagemAmigavel);
+    }
+}
 }
