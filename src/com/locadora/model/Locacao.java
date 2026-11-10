@@ -3,39 +3,48 @@ package com.locadora.model;
 import java.time.LocalDate;
 
 public class Locacao {
-    private int id;
-    private int clienteId;
-    private int veiculoId;
-    private LocalDate dataInicio;
-    private LocalDate dataFimPrevista;
-    private LocalDate dataDevolucao;
+    private int idLocacao;
+    private Veiculo veiculo;
+    private Cliente cliente;
+    private LocalDate dtInicio;
+    private LocalDate dtPrevista;
+    private LocalDate dtDevolucao;
+    private String statusLocacaoVeiculo;
 
     public Locacao() {}
 
-    public Locacao(int id, int clienteId, int veiculoId, LocalDate dataInicio, LocalDate dataFimPrevista, LocalDate dataDevolucao) {
-        this.id = id;
-        this.clienteId = clienteId;
-        this.veiculoId = veiculoId;
-        this.dataInicio = dataInicio;
-        this.dataFimPrevista = dataFimPrevista;
-        this.dataDevolucao = dataDevolucao;
+    public Locacao(int idLocacao, Veiculo veiculo, Cliente cliente,
+                   LocalDate dtInicio, LocalDate dtPrevista,
+                   LocalDate dtDevolucao, String statusLocacaoVeiculo) {
+        this.idLocacao = idLocacao;
+        this.veiculo = veiculo;
+        this.cliente = cliente;
+        this.dtInicio = dtInicio;
+        this.dtPrevista = dtPrevista;
+        this.dtDevolucao = dtDevolucao;
+        this.statusLocacaoVeiculo = statusLocacaoVeiculo;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getIdLocacao() { return idLocacao; }
+    public void setIdLocacao(int idLocacao) { this.idLocacao = idLocacao; }
 
-    public int getClienteId() { return clienteId; }
-    public void setClienteId(int clienteId) { this.clienteId = clienteId; }
+    public Veiculo getVeiculo() { return veiculo; }
+    public void setVeiculo(Veiculo veiculo) { this.veiculo = veiculo; }
 
-    public int getVeiculoId() { return veiculoId; }
-    public void setVeiculoId(int veiculoId) { this.veiculoId = veiculoId; }
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
 
-    public LocalDate getDataInicio() { return dataInicio; }
-    public void setDataInicio(LocalDate dataInicio) { this.dataInicio = dataInicio; }
+    public LocalDate getDtInicio() { return dtInicio; }
+    public void setDtInicio(LocalDate dtInicio) { this.dtInicio = dtInicio; }
 
-    public LocalDate getDataFimPrevista() { return dataFimPrevista; }
-    public void setDataFimPrevista(LocalDate dataFimPrevista) { this.dataFimPrevista = dataFimPrevista; }
+    public LocalDate getDtPrevista() { return dtPrevista; }
+    public void setDtPrevista(LocalDate dtPrevista) { this.dtPrevista = dtPrevista; }
 
-    public LocalDate getDataDevolucao() { return dataDevolucao; }
-    public void setDataDevolucao(LocalDate dataDevolucao) { this.dataDevolucao = dataDevolucao; }
+    public LocalDate getDtDevolucao() { return dtDevolucao; }
+    public void setDtDevolucao(LocalDate dtDevolucao) { this.dtDevolucao = dtDevolucao; }
+
+    public String getStatusLocacaoVeiculo() { return statusLocacaoVeiculo; }
+    public void setStatusLocacaoVeiculo(String statusLocacaoVeiculo) {
+        this.statusLocacaoVeiculo = statusLocacaoVeiculo;
+    }
 }

@@ -1,34 +1,35 @@
 package com.locadora.model;
 
 public class Veiculo {
-    private int id;
-    private String placa;
-    private String modelo;
-    private String marca;
-    private String status; // Ex: "DISPONIVEL", "ALUGADO", "MANUTENCAO"
+    private int idVeiculo;
+    private String placaVeiculo;
+    private String modeloVeiculo;
+    private String marcaVeiculo;
+    private String corVeiculo;
 
     public Veiculo() {}
 
-    public Veiculo(int id, String placa, String modelo, String marca, String status) {
-        this.id = id;
-        this.placa = placa;
-        this.modelo = modelo;
-        this.marca = marca;
-        this.status = status;
+    public Veiculo(int idVeiculo, String placaVeiculo, String modeloVeiculo,
+                   String marcaVeiculo, String corVeiculo) {
+        this.idVeiculo = idVeiculo;
+        this.placaVeiculo = placaVeiculo;
+        this.modeloVeiculo = modeloVeiculo;
+        this.marcaVeiculo = marcaVeiculo;
+        this.corVeiculo = corVeiculo;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getIdVeiculo() { return idVeiculo; }
+    public void setIdVeiculo(int idVeiculo) { this.idVeiculo = idVeiculo; }
 
-    public String getPlaca() { return placa; }
-    public void setPlaca(String placa) { this.placa = placa; }
+    public String getPlacaVeiculo() { return placaVeiculo; }
+    public void setPlacaVeiculo(String placaVeiculo) { this.placaVeiculo = placaVeiculo; }
 
-    public String getModelo() { return modelo; }
-    public void setModelo(String modelo) { this.modelo = modelo; }
+    public String getModeloVeiculo() { return modeloVeiculo; }
+    public void setModeloVeiculo(String modeloVeiculo) { this.modeloVeiculo = modeloVeiculo; }
 
-    public String getMarca() { return marca; }
-    public void setMarca(String marca) { this.marca = marca; }
+    public String getMarcaVeiculo() { return marcaVeiculo; }
+    public void setMarcaVeiculo(String marcaVeiculo) { this.marcaVeiculo = marcaVeiculo; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getCorVeiculo() { return corVeiculo; }
+    public void setCorVeiculo(String corVeiculo) { this.corVeiculo = corVeiculo; }
 }

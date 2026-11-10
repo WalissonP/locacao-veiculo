@@ -1,29 +1,29 @@
 package com.locadora.model;
 
 public class Cliente {
-    private int id;
-    private String nome;
-    private String cpf;
-    private String telefone;
+    private int idCliente;
+    private String nomeCliente;
+    private String emailCliente;
+    private String telefoneCliente;
 
     public Cliente() {}
 
-    public Cliente(int id, String nome, String cpf, String telefone) {
-        this.id = id;
-        this.nome = nome;
-        this.cpf = cpf;
-        this.telefone = telefone;
+    public Cliente(int idCliente, String nomeCliente, String emailCliente, String telefoneCliente) {
+        this.idCliente = idCliente;
+        this.nomeCliente = nomeCliente;
+        this.emailCliente = emailCliente;
+        this.telefoneCliente = telefoneCliente;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getIdCliente() { return idCliente; }
+    public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public String getNomeCliente() { return nomeCliente; }
+    public void setNomeCliente(String nomeCliente) { this.nomeCliente = nomeCliente; }
 
-    public String getCpf() { return cpf; }
-    public void setCpf(String cpf) { this.cpf = cpf; }
+    public String getEmailCliente() { return emailCliente; }
+    public void setEmailCliente(String emailCliente) { this.emailCliente = emailCliente; }
 
-    public String getTelefone() { return telefone; }
-    public void setTelefone(String telefone) { this.telefone = telefone; }
+    public String getTelefoneCliente() { return telefoneCliente; }
+    public void setTelefoneCliente(String telefoneCliente) { this.telefoneCliente = telefoneCliente; }
 }
