@@ -16,11 +16,11 @@ VALUES
 
 -- Inserindo locações
 INSERT INTO locacao (
-    idVeiculo,
-    idCliente,
-    dtinicio,
-    dtPrevista,
-    dtDevolucao,
+    id_veiculo,
+    id_cliente,
+    dt_inicio,
+    dt_prevista,
+    dt_devolucao,
     status_locacao_veiculo
 )
 VALUES
