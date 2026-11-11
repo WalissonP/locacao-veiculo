@@ -2,8 +2,6 @@ package com.locadora.sql;
 
 import com.locadora.config.DatabaseConnection;
 import com.locadora.model.Locacao;
-import com.locadora.model.Cliente;
-import com.locadora.model.Veiculo;
 import com.locadora.relatorioDados.RelatorioDuracao;
 import com.locadora.relatorioDados.RelatorioModelo;
 
@@ -44,6 +42,81 @@ public class LocacaoDAO {
             stmt.executeUpdate();
         }
     }
+
+
+    // Verificar se o cliente existe
+    public boolean existeCliente(int idCliente) throws SQLException {
+
+        String sql = "SELECT 1 FROM cliente WHERE id_cliente = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idCliente);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    // Verificar se o veículo existe
+    public boolean existeVeiculo(int idVeiculo) throws SQLException {
+
+        String sql = "SELECT 1 FROM veiculos WHERE id_veiculo = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idVeiculo);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    // Verificar se o veículo está disponível
+    public boolean veiculoDisponivel(int idVeiculo) throws SQLException {
+
+        String sql = "SELECT 1 FROM locacao " +
+                    "WHERE id_veiculo = ? " +
+                    "AND status_locacao_veiculo = 'LOCADO' " +
+                    "AND dt_devolucao IS NULL";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idVeiculo);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return !rs.next();
+            }
+        }
+    }
+
+    // Registrar devolução do veículo
+    public int registrarDevolucao(int idLocacao, Date dataDevolucao)
+            throws SQLException {
+
+        String sql = "UPDATE locacao " +
+                     "SET dt_devolucao = ?, " +
+                     "status_locacao_veiculo = 'DISPONIVEL' " +
+                     "WHERE id_locacao = ? " +
+                     "AND status_locacao_veiculo = 'LOCADO' " +
+                     "AND ? >= dt_inicio";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDate(1, dataDevolucao);
+            stmt.setInt(2, idLocacao);
+            stmt.setDate(3, dataDevolucao);
+
+            return stmt.executeUpdate();
+        }
+    }
+
 
     // Relatório 1: Locações por modelo de veículo
     public List<RelatorioModelo> obterLocacoesPorModelo()
