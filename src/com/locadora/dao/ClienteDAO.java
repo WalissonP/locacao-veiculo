@@ -1,4 +1,3 @@
-
 package com.locadora.sql;
 
 import com.locadora.config.DatabaseConnection;
@@ -37,7 +36,7 @@ public class ClienteDAO {
 
             while (rs.next()) {
                 clientes.add(new Cliente(
-                    rs.getInt("idcliente"),
+                    rs.getInt("id_cliente"),
                     rs.getString("nome_cliente"),
                     rs.getString("email_cliente"),
                     rs.getString("telefone_cliente")

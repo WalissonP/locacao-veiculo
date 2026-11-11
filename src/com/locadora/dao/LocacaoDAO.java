@@ -1,4 +1,3 @@
-
 package com.locadora.sql;
 
 import com.locadora.config.DatabaseConnection;
@@ -17,8 +16,8 @@ public class LocacaoDAO {
     public void registrarLocacao(Locacao locacao) throws SQLException {
 
         String sql = "INSERT INTO locacao " +
-                     "(idveiculo, idcliente, dtinicio, dtprevista, " +
-                     "dtdevolucao, status_locacao_veiculo) " +
+                     "(id_veiculo, id_cliente, dt_inicio, dt_prevista, " +
+                     "dt_devolucao, status_locacao_veiculo) " +
                      "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -53,9 +52,9 @@ public class LocacaoDAO {
         List<RelatorioModelo> lista = new ArrayList<>();
 
         String sql = "SELECT v.modelo_veiculo AS modelo, " +
-                     "COUNT(l.idlocacao) AS total " +
+                     "COUNT(l.id_locacao) AS total " +
                      "FROM locacao l " +
-                     "JOIN veiculos v ON l.idveiculo = v.idveiculo " +
+                     "JOIN veiculos v ON l.id_veiculo = v.id_veiculo " +
                      "GROUP BY v.modelo_veiculo";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -79,16 +78,16 @@ public class LocacaoDAO {
 
         List<RelatorioDuracao> lista = new ArrayList<>();
 
-        String sql = "SELECT l.idlocacao, " +
-                     "v.modelo_veiculo AS modelo, " +
-                     "c.nome_cliente AS cliente, " +
-                     "l.dtinicio, " +
-                     "l.dtdevolucao, " +
-                     "(l.dtdevolucao - l.dtinicio) AS duracao_dias " +
-                     "FROM locacao l " +
-                     "JOIN veiculos v ON l.idveiculo = v.idveiculo " +
-                     "JOIN cliente c ON l.idcliente = c.idcliente " +
-                     "WHERE l.dtdevolucao IS NOT NULL";
+        String sql = "SELECT l.id_locacao, " +
+                    "v.modelo_veiculo AS modelo, " +
+                    "c.nome_cliente AS cliente, " +
+                    "l.dt_inicio, " +
+                    "l.dt_devolucao, " +
+                    "(l.dt_devolucao - l.dt_inicio) AS duracao_dias " +
+                    "FROM locacao l " +
+                    "JOIN veiculos v ON l.id_veiculo = v.id_veiculo " +
+                    "JOIN cliente c ON l.id_cliente = c.id_cliente " +
+                    "WHERE l.dt_devolucao IS NOT NULL";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -96,11 +95,11 @@ public class LocacaoDAO {
 
             while (rs.next()) {
 
-                Date dataInicio = rs.getDate("dtinicio");
-                Date dataDevolucao = rs.getDate("dtdevolucao");
+                Date dataInicio = rs.getDate("dt_inicio");
+                Date dataDevolucao = rs.getDate("dt_devolucao");
 
                 lista.add(new RelatorioDuracao(
-                    rs.getInt("idlocacao"),
+                    rs.getInt("id_locacao"),
                     rs.getString("modelo"),
                     rs.getString("cliente"),
                     dataInicio != null

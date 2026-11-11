@@ -1,4 +1,3 @@
-
 package com.locadora.sql;
 
 import com.locadora.config.DatabaseConnection;
@@ -38,7 +37,7 @@ public class VeiculoDAO {
 
             while (rs.next()) {
                 veiculos.add(new Veiculo(
-                    rs.getInt("idveiculo"),
+                    rs.getInt("id_veiculo"),
                     rs.getString("placa_veiculo"),
                     rs.getString("modelo_veiculo"),
                     rs.getString("marca_veiculo"),
