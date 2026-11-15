@@ -1,4 +1,4 @@
-package com.locadora.sql;
+package com.locadora.dao;
 
 import com.locadora.config.DatabaseConnection;
 import com.locadora.model.Cliente;
