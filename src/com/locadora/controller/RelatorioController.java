@@ -2,7 +2,7 @@ package com.locadora.controller;
 
 import com.locadora.relatorioDados.RelatorioDuracao;
 import com.locadora.relatorioDados.RelatorioModelo;
-import com.locadora.sql.LocacaoDAO;
+import com.locadora.dao.LocacaoDAO;
 
 import java.sql.SQLException;
 import java.util.List;
