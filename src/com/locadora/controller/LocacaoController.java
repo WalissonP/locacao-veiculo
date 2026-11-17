@@ -3,6 +3,7 @@ package com.locadora.controller;
 import com.locadora.model.Locacao;
 import com.locadora.dao.LocacaoDAO;
 
+import java.util.List;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -13,6 +14,11 @@ public class LocacaoController {
 
     public LocacaoController() {
         this.locacaoDAO = new LocacaoDAO();
+    }
+
+    // Listar todas as locações
+    public List<Locacao> listarTodas() throws SQLException {
+        return locacaoDAO.listarTodas();
     }
 
     // Registrar uma nova locação

@@ -28,7 +28,8 @@ public class ClienteDAO {
     public List<Cliente> listarTodos() throws SQLException {
         List<Cliente> clientes = new ArrayList<>();
 
-        String sql = "SELECT * FROM cliente";
+        String sql = "SELECT id_cliente, nome_cliente, email_cliente, telefone_cliente " +
+                    "FROM cliente";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();

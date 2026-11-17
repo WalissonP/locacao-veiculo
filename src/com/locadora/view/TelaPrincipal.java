@@ -1,14 +1,19 @@
 package com.locadora.view;
 
 import javax.swing.*;
+
+import com.locadora.DadosLocadora;
+import com.locadora.controller.ClienteController;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
-import com.locadora.DadosLocadora;
+import java.sql.SQLException;
 
 public class TelaPrincipal extends JFrame {
     private static final Color NAVY = new Color(29, 47, 65);
@@ -18,6 +23,7 @@ public class TelaPrincipal extends JFrame {
     private static final Color BACKGROUND = new Color(247, 249, 252);
 
     private final DadosLocadora dados = new DadosLocadora();
+    private final ClienteController clienteController = new ClienteController();
     private final CardLayout layoutTelas = new CardLayout();
     private final JPanel telas = new JPanel(layoutTelas);
     private final JLabel tituloTela = new JLabel("Dashboard");
@@ -59,14 +65,14 @@ public class TelaPrincipal extends JFrame {
         area.setOpaque(false);
         area.add(criarCabecalho(), BorderLayout.NORTH);
         telas.add(criarDashboard(), "Dashboard");
-        telaVeiculos = new TelaVeiculos(dados, () -> mostrarTela("Dashboard", "Dashboard", 0));
-        telaClientes = new TelaClientes(dados, () -> mostrarTela("Dashboard", "Dashboard", 0));
-        telaLocacoes = new TelaLocacoes(dados, () -> mostrarTela("Dashboard", "Dashboard", 0));
+        telaVeiculos = new TelaVeiculos(() -> mostrarTela("Dashboard", "Dashboard", 0));
+        telaClientes = new TelaClientes(() -> mostrarTela("Dashboard", "Dashboard", 0));
+        telaLocacoes = new TelaLocacoes(() -> mostrarTela("Dashboard", "Dashboard", 0));
         telaRelatorios = new TelaRelatorios(dados, () -> mostrarTela("Dashboard", "Dashboard", 0));
-        telas.add(telaVeiculos, "Veiculos");
+        telas.add(telaVeiculos, "Veículos");
         telas.add(telaClientes, "Clientes");
-        telas.add(telaLocacoes, "Locacoes");
-        telas.add(telaRelatorios, "Relatorios");
+        telas.add(telaLocacoes, "Locações");
+        telas.add(telaRelatorios, "Relatórios");
         area.add(telas, BorderLayout.CENTER);
         root.add(area, BorderLayout.CENTER);
         add(root);
@@ -88,10 +94,10 @@ public class TelaPrincipal extends JFrame {
         JPanel itens = new JPanel(new GridLayout(5, 1, 0, 8));
         itens.setOpaque(false);
         itens.add(criarBotaoMenu("Dashboard", iconePainel, 0, "Dashboard"));
-        itens.add(criarBotaoMenu("Veiculos", iconeVeiculoMenu, 1, "Veiculos"));
+        itens.add(criarBotaoMenu("Veículos", iconeVeiculoMenu, 1, "Veículos"));
         itens.add(criarBotaoMenu("Clientes", iconeCliente, 2, "Clientes"));
-        itens.add(criarBotaoMenu("Locacoes", iconeLocacao, 3, "Locacoes"));
-        itens.add(criarBotaoMenu("Relatorios", iconeRelatorio, 4, "Relatorios"));
+        itens.add(criarBotaoMenu("Locações", iconeLocacao, 3, "Locações"));
+        itens.add(criarBotaoMenu("Relatórios", iconeRelatorio, 4, "Relatórios"));
         menu.add(itens, BorderLayout.CENTER);
 
         JButton sair = new JButton("Sair", new IconComFundo(iconeSair));
@@ -254,7 +260,15 @@ public class TelaPrincipal extends JFrame {
 
     private void atualizarDashboard() {
         totalVeiculos.setText(String.valueOf(dados.getVeiculos().size()));
-        totalClientes.setText(String.valueOf(dados.getClientes().size()));
+
+        try {
+            totalClientes.setText(
+                    String.valueOf(clienteController.listarTodos().size())
+            );
+        } catch (SQLException e) {
+            totalClientes.setText("--");
+        }
+
         totalLocacoes.setText(String.valueOf(dados.getLocacoes().size()));
     }
 

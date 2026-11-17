@@ -44,6 +44,67 @@ public class LocacaoDAO {
     }
 
 
+    // Listar todas as locações
+    public List<Locacao> listarTodas() throws SQLException {
+        List<Locacao> locacoes = new ArrayList<>();
+
+        String sql = "SELECT " +
+                     "l.id_locacao, l.dt_inicio, l.dt_prevista, " +
+                     "l.dt_devolucao, l.status_locacao_veiculo, " +
+                     "c.id_cliente AS cliente_id, " +
+                     "c.nome_cliente, c.email_cliente, c.telefone_cliente, " +
+                     "v.id_veiculo AS veiculo_id, " +
+                     "v.placa_veiculo, v.modelo_veiculo, " +
+                     "v.marca_veiculo, v.cor_veiculo " +
+                     "FROM locacao l " +
+                     "JOIN cliente c ON l.id_cliente = c.id_cliente " +
+                     "JOIN veiculos v ON l.id_veiculo = v.id_veiculo " +
+                     "ORDER BY l.id_locacao DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+
+                Date dataInicio = rs.getDate("dt_inicio");
+                Date dataPrevista = rs.getDate("dt_prevista");
+                Date dataDevolucao = rs.getDate("dt_devolucao");
+
+                Locacao locacao = new Locacao(
+                    rs.getInt("id_locacao"),
+
+                    new com.locadora.model.Veiculo(
+                        rs.getInt("veiculo_id"),
+                        rs.getString("placa_veiculo"),
+                        rs.getString("modelo_veiculo"),
+                        rs.getString("marca_veiculo"),
+                        rs.getString("cor_veiculo")
+                    ),
+
+                    new com.locadora.model.Cliente(
+                        rs.getInt("cliente_id"),
+                        rs.getString("nome_cliente"),
+                        rs.getString("email_cliente"),
+                        rs.getString("telefone_cliente")
+                    ),
+
+                    dataInicio != null ? dataInicio.toLocalDate() : null,
+                    dataPrevista != null ? dataPrevista.toLocalDate() : null,
+                    dataDevolucao != null ? dataDevolucao.toLocalDate() : null,
+
+                    rs.getString("status_locacao_veiculo")
+                );
+
+                locacoes.add(locacao);
+            }
+        }
+
+        return locacoes;
+    }
+
+
+
     // Verificar se o cliente existe
     public boolean existeCliente(int idCliente) throws SQLException {
 
@@ -100,11 +161,12 @@ public class LocacaoDAO {
             throws SQLException {
 
         String sql = "UPDATE locacao " +
-                     "SET dt_devolucao = ?, " +
-                     "status_locacao_veiculo = 'DISPONIVEL' " +
-                     "WHERE id_locacao = ? " +
-                     "AND status_locacao_veiculo = 'LOCADO' " +
-                     "AND ? >= dt_inicio";
+                    "SET dt_devolucao = ?, " +
+                    "status_locacao_veiculo = 'DISPONIVEL' " +
+                    "WHERE id_locacao = ? " +
+                    "AND status_locacao_veiculo = 'LOCADO' " +
+                    "AND dt_devolucao IS NULL " +
+                    "AND ? >= dt_inicio";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

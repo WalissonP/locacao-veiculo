@@ -16,16 +16,46 @@ public class VeiculoController {
 
     // Cadastrar veículo
     public void cadastrar(Veiculo veiculo) throws SQLException {
-
         validarVeiculo(veiculo);
-
         veiculoDAO.salvar(veiculo);
     }
 
     // Listar todos os veículos
     public List<Veiculo> listarTodos() throws SQLException {
-
         return veiculoDAO.listarTodos();
+    }
+
+    // Atualizar veículo
+    public void atualizar(Veiculo veiculo) throws SQLException {
+        validarVeiculo(veiculo);
+
+        if (veiculo.getIdVeiculo() <= 0) {
+            throw new IllegalArgumentException(
+                "Selecione um veículo válido para alterar."
+            );
+        }
+
+        if (!veiculoDAO.atualizar(veiculo)) {
+            throw new IllegalArgumentException(
+                "Veículo não encontrado."
+            );
+        }
+    }
+
+    // Excluir veículo
+    public void excluir(int idVeiculo) throws SQLException {
+
+        if (idVeiculo <= 0) {
+            throw new IllegalArgumentException(
+                "Selecione um veículo válido para excluir."
+            );
+        }
+
+        if (!veiculoDAO.excluir(idVeiculo)) {
+            throw new IllegalArgumentException(
+                "Veículo não encontrado."
+            );
+        }
     }
 
     // Validar os dados do veículo

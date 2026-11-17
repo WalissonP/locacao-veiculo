@@ -1,20 +1,22 @@
 package com.locadora.view;
 
+import com.locadora.controller.ClienteController;
+import com.locadora.model.Cliente;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import com.locadora.DadosLocadora;
+import java.sql.SQLException;
+import java.util.List;
 
 public final class TelaClientes extends JPanel {
-    private final DadosLocadora dados;
+    private final ClienteController clienteController = new ClienteController();
     private final JLabel resumo = ComponentesTela.criarResumo();
     private final DefaultTableModel modelo =
             ComponentesTela.criarModelo("ID", "Nome", "E-mail", "Telefone");
     private final JTable tabela = ComponentesTela.criarTabela(modelo);
 
-    public TelaClientes(DadosLocadora dados, Runnable voltar) {
-        this.dados = dados;
-
+    public TelaClientes(Runnable voltar) {
         setLayout(new BorderLayout());
         setOpaque(false);
 
@@ -31,21 +33,33 @@ public final class TelaClientes extends JPanel {
         atualizar();
     }
 
+    // Listar clientes cadastrados no banco
     public void atualizar() {
         modelo.setRowCount(0);
 
-        for (DadosLocadora.Cliente cliente : dados.getClientes()) {
-            modelo.addRow(new Object[]{
-                    cliente.getId(),
-                    cliente.getNome(),
-                    cliente.getEmail(),
-                    cliente.getTelefone()
-            });
-        }
+        try {
+            List<Cliente> clientes = clienteController.listarTodos();
 
-        resumo.setText("Clientes cadastrados: " + dados.getClientes().size());
+            for (Cliente cliente : clientes) {
+                modelo.addRow(new Object[]{
+                        cliente.getIdCliente(),
+                        cliente.getNomeCliente(),
+                        cliente.getEmailCliente(),
+                        cliente.getTelefoneCliente()
+                });
+            }
+
+            resumo.setText("Clientes cadastrados: " + clientes.size());
+
+        } catch (SQLException e) {
+            ComponentesTela.mostrarErro(
+                    this,
+                    "Não foi possível carregar os clientes: " + e.getMessage()
+            );
+        }
     }
 
+    // Cadastrar cliente no banco
     private void cadastrar() {
         String[] valores = ComponentesTela.abrirFormulario(
                 this,
@@ -59,85 +73,43 @@ public final class TelaClientes extends JPanel {
         }
 
         try {
-            dados.cadastrarCliente(
-                    valores[0],
-                    valores[1],
-                    valores[2]
+            Cliente cliente = new Cliente();
+
+            cliente.setNomeCliente(valores[0].trim());
+            cliente.setEmailCliente(valores[1].trim());
+            cliente.setTelefoneCliente(valores[2].trim());
+
+            clienteController.cadastrar(cliente);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Cliente cadastrado com sucesso!"
             );
 
             atualizar();
 
         } catch (IllegalArgumentException e) {
             ComponentesTela.mostrarErro(this, e.getMessage());
+
+        } catch (SQLException e) {
+            ComponentesTela.mostrarErro(
+                    this,
+                    "Erro ao cadastrar cliente: " + e.getMessage()
+            );
         }
     }
 
     private void alterar() {
-        DadosLocadora.Cliente cliente = selecionado();
-
-        if (cliente == null) {
-            ComponentesTela.mostrarErro(this, "Selecione um cliente para alterar.");
-            return;
-        }
-
-        String[] valores = ComponentesTela.abrirFormulario(
+        ComponentesTela.mostrarErro(
                 this,
-                "Alterar cliente",
-                new String[]{"Nome", "E-mail", "Telefone"},
-                new String[]{
-                        cliente.getNome(),
-                        cliente.getEmail(),
-                        cliente.getTelefone()
-                }
+                "A alteração de clientes ainda não foi implementada."
         );
-
-        if (valores == null) {
-            return;
-        }
-
-        try {
-            dados.alterarCliente(
-                    cliente,
-                    valores[0],
-                    valores[1],
-                    valores[2]
-            );
-
-            atualizar();
-
-        } catch (IllegalArgumentException e) {
-            ComponentesTela.mostrarErro(this, e.getMessage());
-        }
     }
 
     private void excluir() {
-        DadosLocadora.Cliente cliente = selecionado();
-
-        if (cliente == null) {
-            ComponentesTela.mostrarErro(this, "Selecione um cliente para excluir.");
-            return;
-        }
-
-        if (!ComponentesTela.confirmarExclusao(
+        ComponentesTela.mostrarErro(
                 this,
-                "Deseja excluir o cliente selecionado?")) {
-            return;
-        }
-
-        try {
-            dados.excluirCliente(cliente);
-            atualizar();
-
-        } catch (IllegalArgumentException e) {
-            ComponentesTela.mostrarErro(this, e.getMessage());
-        }
-    }
-
-    private DadosLocadora.Cliente selecionado() {
-        int indice = tabela.getSelectedRow();
-
-        return indice < 0
-                ? null
-                : dados.getClientes().get(indice);
+                "A exclusão de clientes ainda não foi implementada."
+        );
     }
 }

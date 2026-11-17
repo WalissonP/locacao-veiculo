@@ -3,96 +3,192 @@ package com.locadora.view;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import com.locadora.DadosLocadora;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.locadora.controller.VeiculoController;
+import com.locadora.model.Veiculo;
 
 public final class TelaVeiculos extends JPanel {
-    private final DadosLocadora dados;
+    private final VeiculoController veiculoController = new VeiculoController();
     private final JLabel resumo = ComponentesTela.criarResumo();
-    private final DefaultTableModel modelo = ComponentesTela.criarModelo("ID", "Marca", "Modelo", "Ano", "Placa");
+    private final DefaultTableModel modelo =
+            ComponentesTela.criarModelo("ID", "Placa", "Modelo", "Marca", "Cor");
     private final JTable tabela = ComponentesTela.criarTabela(modelo);
+    private List<Veiculo> veiculos = new ArrayList<>();
 
-    public TelaVeiculos(DadosLocadora dados, Runnable voltar) {
-        this.dados = dados;
+    public TelaVeiculos(Runnable voltar) {
         setLayout(new BorderLayout());
         setOpaque(false);
+
         add(ComponentesTela.criarPainelCadastro(
-                "Cadastre e mantenha os veiculos da locadora.",
+                "Cadastre e mantenha os veículos da locadora.",
                 resumo,
                 tabela,
                 ComponentesTela.criarBotao("Cadastrar", this::cadastrar, true),
                 ComponentesTela.criarBotao("Alterar", this::alterar, false),
                 ComponentesTela.criarBotao("Excluir", this::excluir, false),
-                ComponentesTela.criarBotao("Voltar", voltar, false)), BorderLayout.CENTER);
+                ComponentesTela.criarBotao("Voltar", voltar, false)),
+                BorderLayout.CENTER);
+
         atualizar();
     }
 
+    // Atualizar tabela com os veículos do banco
     public void atualizar() {
         modelo.setRowCount(0);
-        for (DadosLocadora.Veiculo veiculo : dados.getVeiculos()) {
-            modelo.addRow(new Object[]{
-                    veiculo.getId(), veiculo.getMarca(), veiculo.getModelo(), veiculo.getAno(), veiculo.getPlaca()
-            });
+
+        try {
+            veiculos = veiculoController.listarTodos();
+
+            for (Veiculo veiculo : veiculos) {
+                modelo.addRow(new Object[]{
+                    veiculo.getIdVeiculo(),
+                    veiculo.getPlacaVeiculo(),
+                    veiculo.getModeloVeiculo(),
+                    veiculo.getMarcaVeiculo(),
+                    veiculo.getCorVeiculo()
+                });
+            }
+
+            resumo.setText("Veículos cadastrados: " + veiculos.size());
+
+        } catch (SQLException e) {
+            ComponentesTela.mostrarErro(
+                this,
+                "Não foi possível carregar os veículos: " + e.getMessage()
+            );
         }
-        resumo.setText("Veiculos cadastrados: " + dados.getVeiculos().size());
     }
 
+    // Cadastrar veículo
     private void cadastrar() {
-        String[] valores = ComponentesTela.abrirFormulario(this, "Cadastrar veiculo",
-                new String[]{"Marca", "Modelo", "Ano", "Placa"}, null);
+        String[] valores = ComponentesTela.abrirFormulario(
+                this,
+                "Cadastrar veículo",
+                new String[]{"Placa", "Modelo", "Marca", "Cor"},
+                null
+        );
+
         if (valores == null) {
             return;
         }
+
         try {
-            dados.cadastrarVeiculo(valores[0], valores[1], Integer.parseInt(valores[2]), valores[3]);
+            Veiculo veiculo = new Veiculo(0, valores[0], valores[1],
+                                          valores[2], valores[3]);
+
+            veiculoController.cadastrar(veiculo);
             atualizar();
-        } catch (NumberFormatException e) {
-            ComponentesTela.mostrarErro(this, "O ano deve ser informado como numero.");
+
         } catch (IllegalArgumentException e) {
             ComponentesTela.mostrarErro(this, e.getMessage());
+
+        } catch (SQLException e) {
+            ComponentesTela.mostrarErro(
+                this,
+                "Não foi possível cadastrar o veículo: " + e.getMessage()
+            );
         }
     }
 
+    // Alterar veículo
     private void alterar() {
-        DadosLocadora.Veiculo veiculo = selecionado();
+        Veiculo veiculo = selecionado();
+
         if (veiculo == null) {
-            ComponentesTela.mostrarErro(this, "Selecione um veiculo para alterar.");
+            ComponentesTela.mostrarErro(
+                this,
+                "Selecione um veículo para alterar."
+            );
             return;
         }
-        String[] valores = ComponentesTela.abrirFormulario(this, "Alterar veiculo",
-                new String[]{"Marca", "Modelo", "Ano", "Placa"},
-                new String[]{veiculo.getMarca(), veiculo.getModelo(), String.valueOf(veiculo.getAno()), veiculo.getPlaca()});
+
+        String[] valores = ComponentesTela.abrirFormulario(
+                this,
+                "Alterar veículo",
+                new String[]{"Placa", "Modelo", "Marca", "Cor"},
+                new String[]{
+                    veiculo.getPlacaVeiculo(),
+                    veiculo.getModeloVeiculo(),
+                    veiculo.getMarcaVeiculo(),
+                    veiculo.getCorVeiculo()
+                }
+        );
+
         if (valores == null) {
             return;
         }
+
         try {
-            dados.alterarVeiculo(veiculo, valores[0], valores[1], Integer.parseInt(valores[2]), valores[3]);
+            veiculo.setPlacaVeiculo(valores[0]);
+            veiculo.setModeloVeiculo(valores[1]);
+            veiculo.setMarcaVeiculo(valores[2]);
+            veiculo.setCorVeiculo(valores[3]);
+
+            veiculoController.atualizar(veiculo);
             atualizar();
-        } catch (NumberFormatException e) {
-            ComponentesTela.mostrarErro(this, "O ano deve ser informado como numero.");
+
         } catch (IllegalArgumentException e) {
             ComponentesTela.mostrarErro(this, e.getMessage());
+
+        } catch (SQLException e) {
+            ComponentesTela.mostrarErro(
+                this,
+                "Não foi possível alterar o veículo: " + e.getMessage()
+            );
         }
     }
 
+    // Excluir veículo
     private void excluir() {
-        DadosLocadora.Veiculo veiculo = selecionado();
+        Veiculo veiculo = selecionado();
+
         if (veiculo == null) {
-            ComponentesTela.mostrarErro(this, "Selecione um veiculo para excluir.");
+            ComponentesTela.mostrarErro(
+                this,
+                "Selecione um veículo para excluir."
+            );
             return;
         }
-        if (!ComponentesTela.confirmarExclusao(this, "Deseja excluir o veiculo selecionado?")) {
+
+        if (!ComponentesTela.confirmarExclusao(
+                this,
+                "Deseja excluir o veículo selecionado?")) {
             return;
         }
+
         try {
-            dados.excluirVeiculo(veiculo);
+            veiculoController.excluir(veiculo.getIdVeiculo());
             atualizar();
+
         } catch (IllegalArgumentException e) {
             ComponentesTela.mostrarErro(this, e.getMessage());
+
+        } catch (SQLException e) {
+            ComponentesTela.mostrarErro(
+                this,
+                "Não foi possível excluir o veículo. " +
+                "Verifique se ele possui locações vinculadas."
+            );
         }
     }
 
-    private DadosLocadora.Veiculo selecionado() {
+    // Obter veículo selecionado na tabela
+    private Veiculo selecionado() {
         int indice = tabela.getSelectedRow();
-        return indice < 0 ? null : dados.getVeiculos().get(indice);
+
+        if (indice < 0) {
+            return null;
+        }
+
+        int indiceModelo = tabela.convertRowIndexToModel(indice);
+
+        if (indiceModelo >= veiculos.size()) {
+            return null;
+        }
+
+        return veiculos.get(indiceModelo);
     }
 }
