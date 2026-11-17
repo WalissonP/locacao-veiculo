@@ -4,6 +4,8 @@ import javax.swing.*;
 
 import com.locadora.DadosLocadora;
 import com.locadora.controller.ClienteController;
+import com.locadora.controller.VeiculoController;
+import com.locadora.controller.LocacaoController;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -24,6 +26,8 @@ public class TelaPrincipal extends JFrame {
 
     private final DadosLocadora dados = new DadosLocadora();
     private final ClienteController clienteController = new ClienteController();
+    private final VeiculoController veiculoController = new VeiculoController();
+    private final LocacaoController locacaoController = new LocacaoController();
     private final CardLayout layoutTelas = new CardLayout();
     private final JPanel telas = new JPanel(layoutTelas);
     private final JLabel tituloTela = new JLabel("Dashboard");
@@ -259,17 +263,36 @@ public class TelaPrincipal extends JFrame {
     }
 
     private void atualizarDashboard() {
-        totalVeiculos.setText(String.valueOf(dados.getVeiculos().size()));
 
+        // Total de veículos cadastrados
+        try {
+            totalVeiculos.setText(
+                String.valueOf(veiculoController.listarTodos().size())
+            );
+        } catch (SQLException e) {
+            totalVeiculos.setText("--");
+            e.printStackTrace();
+        }
+
+        // Total de clientes cadastrados
         try {
             totalClientes.setText(
-                    String.valueOf(clienteController.listarTodos().size())
+                String.valueOf(clienteController.listarTodos().size())
             );
         } catch (SQLException e) {
             totalClientes.setText("--");
+            e.printStackTrace();
         }
 
-        totalLocacoes.setText(String.valueOf(dados.getLocacoes().size()));
+        // Total de locações registradas
+        try {
+            totalLocacoes.setText(
+                String.valueOf(locacaoController.listarTodas().size())
+            );
+        } catch (SQLException e) {
+            totalLocacoes.setText("--");
+            e.printStackTrace();
+        }
     }
 
     private Icon carregarIcone(String nomeArquivo, int tamanho) {
