@@ -1,19 +1,21 @@
 package com.locadora.view;
 
-import javax.swing.*;
-
 import com.locadora.controller.ClienteController;
-import com.locadora.controller.VeiculoController;
+import com.locadora.controller.FaturamentoController;
 import com.locadora.controller.LocacaoController;
+import com.locadora.controller.VeiculoController;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import javax.imageio.ImageIO;
+import java.util.Locale;
 
 public class TelaPrincipal extends JFrame {
     private static final Color NAVY = new Color(29, 47, 65);
@@ -25,12 +27,14 @@ public class TelaPrincipal extends JFrame {
     private final ClienteController clienteController = new ClienteController();
     private final VeiculoController veiculoController = new VeiculoController();
     private final LocacaoController locacaoController = new LocacaoController();
+    private final FaturamentoController faturamentoController = new FaturamentoController();
     private final CardLayout layoutTelas = new CardLayout();
     private final JPanel telas = new JPanel(layoutTelas);
     private final JLabel tituloTela = new JLabel("Dashboard");
     private final JLabel totalVeiculos = new JLabel("0");
     private final JLabel totalClientes = new JLabel("0");
     private final JLabel totalLocacoes = new JLabel("0");
+    private final JLabel totalFaturamentoMes = new JLabel("R$ 0,00");
     private final List<JButton> botoesMenu = new ArrayList<>();
     private final Icon iconePainel;
     private final Icon iconeVeiculo;
@@ -42,6 +46,7 @@ public class TelaPrincipal extends JFrame {
     private TelaVeiculos telaVeiculos;
     private TelaClientes telaClientes;
     private TelaLocacoes telaLocacoes;
+    private TelaFaturamento telaFaturamento;
     private TelaRelatorios telaRelatorios;
 
     public TelaPrincipal() {
@@ -69,10 +74,12 @@ public class TelaPrincipal extends JFrame {
         telaVeiculos = new TelaVeiculos(() -> mostrarTela("Dashboard", "Dashboard", 0));
         telaClientes = new TelaClientes(() -> mostrarTela("Dashboard", "Dashboard", 0));
         telaLocacoes = new TelaLocacoes(() -> mostrarTela("Dashboard", "Dashboard", 0));
+        telaFaturamento = new TelaFaturamento(() -> mostrarTela("Dashboard", "Dashboard", 0));
         telaRelatorios = new TelaRelatorios(() -> mostrarTela("Dashboard", "Dashboard", 0));
         telas.add(telaVeiculos, "Veículos");
         telas.add(telaClientes, "Clientes");
         telas.add(telaLocacoes, "Locações");
+        telas.add(telaFaturamento, "Faturamento");
         telas.add(telaRelatorios, "Relatórios");
         area.add(telas, BorderLayout.CENTER);
         root.add(area, BorderLayout.CENTER);
@@ -94,13 +101,14 @@ public class TelaPrincipal extends JFrame {
         marca.setForeground(Color.WHITE);
         menu.add(marca, BorderLayout.NORTH);
 
-        JPanel itens = new JPanel(new GridLayout(5, 1, 0, 8));
+        JPanel itens = new JPanel(new GridLayout(6, 1, 0, 8));
         itens.setOpaque(false);
         itens.add(criarBotaoMenu("Dashboard", iconePainel, 0, "Dashboard"));
         itens.add(criarBotaoMenu("Veículos", iconeVeiculoMenu, 1, "Veículos"));
         itens.add(criarBotaoMenu("Clientes", iconeCliente, 2, "Clientes"));
         itens.add(criarBotaoMenu("Locações", iconeLocacao, 3, "Locações"));
-        itens.add(criarBotaoMenu("Relatórios", iconeRelatorio, 4, "Relatórios"));
+        itens.add(criarBotaoMenu("Faturamento", iconeRelatorio, 4, "Faturamento"));
+        itens.add(criarBotaoMenu("Relatórios", iconeRelatorio, 5, "Relatórios"));
         menu.add(itens, BorderLayout.CENTER);
 
         JButton sair = new JButton("Sair", new IconComFundo(iconeSair));
@@ -139,6 +147,7 @@ public class TelaPrincipal extends JFrame {
         telaVeiculos.atualizar();
         telaClientes.atualizar();
         telaLocacoes.atualizar();
+        telaFaturamento.atualizar();
         telaRelatorios.atualizar();
         layoutTelas.show(telas, nomeTela);
     }
@@ -195,17 +204,13 @@ public class TelaPrincipal extends JFrame {
         cards.add(criarCard(iconeVeiculo, totalVeiculos, "Veículos cadastrados", BLUE));
         cards.add(criarCard(iconeCliente, totalClientes, "Clientes cadastrados", new Color(42, 150, 88)));
         cards.add(criarCard(iconeLocacao, totalLocacoes, "Locações efetuadas", new Color(221, 145, 25)));
-        cards.add(criarCard("$", "R$ 0,00", "Faturamento (mês)", new Color(126, 70, 185)));
+        cards.add(criarCard(new JLabel("$", SwingConstants.CENTER), totalFaturamentoMes, "Faturamento (mês)", new Color(126, 70, 185)));
         painel.add(cards, BorderLayout.NORTH);
         return painel;
     }
 
     private JPanel criarCard(Icon icone, JLabel valor, String legenda, Color cor) {
         return criarCard(new JLabel(icone, SwingConstants.CENTER), valor, legenda, cor);
-    }
-
-    private JPanel criarCard(String icone, String valor, String legenda, Color cor) {
-        return criarCard(new JLabel(icone, SwingConstants.CENTER), new JLabel(valor), legenda, cor);
     }
 
     private JPanel criarCard(JLabel iconeLabel, JLabel valorLabel, String legenda, Color cor) {
@@ -235,36 +240,33 @@ public class TelaPrincipal extends JFrame {
         return card;
     }
 
-
     private void atualizarDashboard() {
-
-        // Total de veículos cadastrados
         try {
-            totalVeiculos.setText(
-                String.valueOf(veiculoController.listarTodos().size())
-            );
+            totalVeiculos.setText(String.valueOf(veiculoController.listarTodos().size()));
         } catch (SQLException e) {
             totalVeiculos.setText("--");
             e.printStackTrace();
         }
 
-        // Total de clientes cadastrados
         try {
-            totalClientes.setText(
-                String.valueOf(clienteController.listarTodos().size())
-            );
+            totalClientes.setText(String.valueOf(clienteController.listarTodos().size()));
         } catch (SQLException e) {
             totalClientes.setText("--");
             e.printStackTrace();
         }
 
-        // Total de locações registradas
         try {
-            totalLocacoes.setText(
-                String.valueOf(locacaoController.listarTodas().size())
-            );
+            totalLocacoes.setText(String.valueOf(locacaoController.listarTodas().size()));
         } catch (SQLException e) {
             totalLocacoes.setText("--");
+            e.printStackTrace();
+        }
+
+        try {
+            NumberFormat moeda = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+            totalFaturamentoMes.setText(moeda.format(faturamentoController.obterTotalPagoMesAtual()));
+        } catch (SQLException e) {
+            totalFaturamentoMes.setText("--");
             e.printStackTrace();
         }
     }
