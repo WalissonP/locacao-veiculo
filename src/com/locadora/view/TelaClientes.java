@@ -10,10 +10,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 public final class TelaClientes extends JPanel {
+
     private final ClienteController clienteController = new ClienteController();
+
     private final JLabel resumo = ComponentesTela.criarResumo();
+
     private final DefaultTableModel modelo =
             ComponentesTela.criarModelo("ID", "Nome", "E-mail", "Telefone");
+
     private final JTable tabela = ComponentesTela.criarTabela(modelo);
 
     public TelaClientes(Runnable voltar) {
@@ -59,7 +63,7 @@ public final class TelaClientes extends JPanel {
         }
     }
 
-    // Cadastrar cliente no banco
+    // Cadastrar cliente
     private void cadastrar() {
         String[] valores = ComponentesTela.abrirFormulario(
                 this,
@@ -99,17 +103,115 @@ public final class TelaClientes extends JPanel {
         }
     }
 
+    // Alterar cliente selecionado
     private void alterar() {
-        ComponentesTela.mostrarErro(
+        int linha = tabela.getSelectedRow();
+
+        if (linha == -1) {
+            ComponentesTela.mostrarErro(
+                    this,
+                    "Selecione um cliente para alterar."
+            );
+            return;
+        }
+
+        linha = tabela.convertRowIndexToModel(linha);
+
+        int id = (int) modelo.getValueAt(linha, 0);
+
+        String[] valoresAtuais = {
+                modelo.getValueAt(linha, 1).toString(),
+                modelo.getValueAt(linha, 2).toString(),
+                modelo.getValueAt(linha, 3).toString()
+        };
+
+        String[] valores = ComponentesTela.abrirFormulario(
                 this,
-                "A alteração de clientes ainda não foi implementada."
+                "Alterar cliente",
+                new String[]{"Nome", "E-mail", "Telefone"},
+                valoresAtuais
         );
+
+        if (valores == null) {
+            return;
+        }
+
+        try {
+            Cliente cliente = new Cliente();
+
+            cliente.setIdCliente(id);
+            cliente.setNomeCliente(valores[0].trim());
+            cliente.setEmailCliente(valores[1].trim());
+            cliente.setTelefoneCliente(valores[2].trim());
+
+            clienteController.atualizar(cliente);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Cliente atualizado com sucesso!"
+            );
+
+            atualizar();
+
+        } catch (IllegalArgumentException e) {
+            ComponentesTela.mostrarErro(this, e.getMessage());
+
+        } catch (SQLException e) {
+            ComponentesTela.mostrarErro(
+                    this,
+                    "Erro ao atualizar cliente: " + e.getMessage()
+            );
+        }
     }
 
+    // Excluir cliente selecionado
     private void excluir() {
-        ComponentesTela.mostrarErro(
+        int linha = tabela.getSelectedRow();
+
+        if (linha == -1) {
+            ComponentesTela.mostrarErro(
+                    this,
+                    "Selecione um cliente para excluir."
+            );
+            return;
+        }
+
+        linha = tabela.convertRowIndexToModel(linha);
+
+        int id = (int) modelo.getValueAt(linha, 0);
+
+        String nome = modelo.getValueAt(linha, 1).toString();
+
+        int confirmacao = JOptionPane.showConfirmDialog(
                 this,
-                "A exclusão de clientes ainda não foi implementada."
+                "Deseja realmente excluir o cliente " + nome + "?",
+                "Confirmar exclusão",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
         );
+
+        if (confirmacao != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            clienteController.excluir(id);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Cliente excluído com sucesso!"
+            );
+
+            atualizar();
+
+        } catch (IllegalArgumentException e) {
+            ComponentesTela.mostrarErro(this, e.getMessage());
+
+        } catch (SQLException e) {
+            ComponentesTela.mostrarErro(
+                    this,
+                    "Erro ao excluir cliente: " + e.getMessage()
+            );
+        }
     }
 }

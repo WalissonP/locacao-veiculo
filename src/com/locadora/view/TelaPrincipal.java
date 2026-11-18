@@ -2,7 +2,6 @@ package com.locadora.view;
 
 import javax.swing.*;
 
-import com.locadora.DadosLocadora;
 import com.locadora.controller.ClienteController;
 import com.locadora.controller.VeiculoController;
 import com.locadora.controller.LocacaoController;
@@ -15,7 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
-import java.sql.SQLException;
 
 public class TelaPrincipal extends JFrame {
     private static final Color NAVY = new Color(29, 47, 65);
@@ -24,7 +22,6 @@ public class TelaPrincipal extends JFrame {
     private static final Color MUTED = new Color(100, 116, 139);
     private static final Color BACKGROUND = new Color(247, 249, 252);
 
-    private final DadosLocadora dados = new DadosLocadora();
     private final ClienteController clienteController = new ClienteController();
     private final VeiculoController veiculoController = new VeiculoController();
     private final LocacaoController locacaoController = new LocacaoController();
@@ -72,7 +69,7 @@ public class TelaPrincipal extends JFrame {
         telaVeiculos = new TelaVeiculos(() -> mostrarTela("Dashboard", "Dashboard", 0));
         telaClientes = new TelaClientes(() -> mostrarTela("Dashboard", "Dashboard", 0));
         telaLocacoes = new TelaLocacoes(() -> mostrarTela("Dashboard", "Dashboard", 0));
-        telaRelatorios = new TelaRelatorios(dados, () -> mostrarTela("Dashboard", "Dashboard", 0));
+        telaRelatorios = new TelaRelatorios(() -> mostrarTela("Dashboard", "Dashboard", 0));
         telas.add(telaVeiculos, "Veículos");
         telas.add(telaClientes, "Clientes");
         telas.add(telaLocacoes, "Locações");
@@ -152,7 +149,7 @@ public class TelaPrincipal extends JFrame {
                 BorderFactory.createEmptyBorder(20, 30, 20, 30)));
         tituloTela.setFont(new Font("SansSerif", Font.BOLD, 20));
         tituloTela.setForeground(TEXT);
-        JLabel usuario = new JLabel("  (o)  Administrador  v");
+        JLabel usuario = new JLabel(" Administrador ");
         usuario.setFont(new Font("SansSerif", Font.PLAIN, 13));
         usuario.setForeground(TEXT);
         cabecalho.add(tituloTela, BorderLayout.WEST);
@@ -169,7 +166,6 @@ public class TelaPrincipal extends JFrame {
         conteudo.add(criarBoasVindas(), BorderLayout.NORTH);
         conteudo.add(criarPainelPrincipal(), BorderLayout.CENTER);
         dashboard.add(conteudo, BorderLayout.CENTER);
-        dashboard.add(criarRodapeCreditos(), BorderLayout.SOUTH);
         return dashboard;
     }
 
@@ -180,7 +176,7 @@ public class TelaPrincipal extends JFrame {
         JLabel titulo = new JLabel("Bem-vindo!");
         titulo.setFont(new Font("SansSerif", Font.BOLD, 26));
         titulo.setForeground(TEXT);
-        JLabel subtitulo = new JLabel("Visao geral da locadora.");
+        JLabel subtitulo = new JLabel("Visão geral da locadora.");
         subtitulo.setFont(new Font("SansSerif", Font.PLAIN, 15));
         subtitulo.setForeground(MUTED);
         painel.add(titulo);
@@ -194,10 +190,10 @@ public class TelaPrincipal extends JFrame {
         painel.setOpaque(false);
         JPanel cards = new JPanel(new GridLayout(1, 4, 16, 0));
         cards.setOpaque(false);
-        cards.add(criarCard(iconeVeiculo, totalVeiculos, "Veiculos cadastrados", BLUE));
+        cards.add(criarCard(iconeVeiculo, totalVeiculos, "Veículos cadastrados", BLUE));
         cards.add(criarCard(iconeCliente, totalClientes, "Clientes cadastrados", new Color(42, 150, 88)));
-        cards.add(criarCard(iconeLocacao, totalLocacoes, "Locacoes efetuadas", new Color(221, 145, 25)));
-        cards.add(criarCard("$", "R$ 0,00", "Faturamento (mes)", new Color(126, 70, 185)));
+        cards.add(criarCard(iconeLocacao, totalLocacoes, "Locações efetuadas", new Color(221, 145, 25)));
+        cards.add(criarCard("$", "R$ 0,00", "Faturamento (mês)", new Color(126, 70, 185)));
         painel.add(cards, BorderLayout.NORTH);
         return painel;
     }
@@ -237,30 +233,6 @@ public class TelaPrincipal extends JFrame {
         return card;
     }
 
-    private JPanel criarRodapeCreditos() {
-        JPanel rodape = new JPanel();
-        rodape.setLayout(new BoxLayout(rodape, BoxLayout.Y_AXIS));
-        rodape.setBackground(Color.WHITE);
-        rodape.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(226, 232, 240)),
-                BorderFactory.createEmptyBorder(12, 30, 14, 30)));
-        JLabel titulo = new JLabel("Informacoes do trabalho");
-        titulo.setFont(new Font("SansSerif", Font.BOLD, 12));
-        titulo.setForeground(TEXT);
-        rodape.add(titulo);
-        rodape.add(Box.createVerticalStrut(5));
-        rodape.add(criarLinhaCredito("Criado por: [Nomes dos integrantes]"));
-        rodape.add(criarLinhaCredito("Disciplina: Banco de dados 2026/2"));
-        rodape.add(criarLinhaCredito("Professor: Howard Roatti"));
-        return rodape;
-    }
-
-    private JLabel criarLinhaCredito(String texto) {
-        JLabel linha = new JLabel(texto);
-        linha.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        linha.setForeground(MUTED);
-        return linha;
-    }
 
     private void atualizarDashboard() {
 

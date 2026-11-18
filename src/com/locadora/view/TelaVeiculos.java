@@ -130,6 +130,13 @@ public final class TelaVeiculos extends JPanel {
             veiculoController.atualizar(veiculo);
             atualizar();
 
+            JOptionPane.showMessageDialog(
+                this,
+                "Veículo alterado com sucesso!",
+                "Sucesso",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+
         } catch (IllegalArgumentException e) {
             ComponentesTela.mostrarErro(this, e.getMessage());
 

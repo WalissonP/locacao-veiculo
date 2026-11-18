@@ -2,6 +2,8 @@ package com.locadora.controller;
 
 import com.locadora.model.Locacao;
 import com.locadora.dao.LocacaoDAO;
+import com.locadora.relatorioDados.RelatorioModelo;
+import com.locadora.relatorioDados.RelatorioDuracao;
 
 import java.util.List;
 import java.sql.Date;
@@ -9,7 +11,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class LocacaoController {
-
     private final LocacaoDAO locacaoDAO;
 
     public LocacaoController() {
@@ -126,5 +127,15 @@ public class LocacaoController {
                 "no momento da devolução do veículo."
             );
         }
+    }
+
+    // Relatório de locações por modelo
+    public List<RelatorioModelo> obterLocacoesPorModelo() throws SQLException {
+        return locacaoDAO.obterLocacoesPorModelo();
+    }
+
+    // Relatório de duração das locações
+    public List<RelatorioDuracao> obterDuracaoLocacoes() throws SQLException {
+        return locacaoDAO.obterDuracaoLocacoes();
     }
 }

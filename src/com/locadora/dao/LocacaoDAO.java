@@ -59,7 +59,7 @@ public class LocacaoDAO {
                      "FROM locacao l " +
                      "JOIN cliente c ON l.id_cliente = c.id_cliente " +
                      "JOIN veiculos v ON l.id_veiculo = v.id_veiculo " +
-                     "ORDER BY l.id_locacao DESC";
+                     "ORDER BY l.id_locacao ASC";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);

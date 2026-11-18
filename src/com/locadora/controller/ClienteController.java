@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ClienteController {
-
     private final ClienteDAO clienteDAO;
 
     public ClienteController() {
@@ -16,16 +15,57 @@ public class ClienteController {
 
     // Cadastrar cliente
     public void cadastrar(Cliente cliente) throws SQLException {
-
         validarCliente(cliente);
-
         clienteDAO.salvar(cliente);
     }
 
     // Listar todos os clientes
     public List<Cliente> listarTodos() throws SQLException {
-
         return clienteDAO.listarTodos();
+    }
+
+    // Alterar cliente
+    public void atualizar(Cliente cliente) throws SQLException {
+        validarCliente(cliente);
+
+        if (cliente.getIdCliente() <= 0) {
+            throw new IllegalArgumentException(
+                "O ID do cliente deve ser válido."
+            );
+        }
+
+        if (!clienteDAO.atualizar(cliente)) {
+            throw new IllegalArgumentException(
+                "Cliente não encontrado."
+            );
+        }
+    }
+
+    // Excluir cliente
+    public void excluir(int idCliente) throws SQLException {
+        if (idCliente <= 0) {
+            throw new IllegalArgumentException(
+                "O ID do cliente deve ser válido."
+            );
+        }
+
+        if (!clienteDAO.existeCliente(idCliente)) {
+            throw new IllegalArgumentException(
+                "Cliente não encontrado."
+            );
+        }
+
+        if (clienteDAO.temLocacao(idCliente)) {
+            throw new IllegalArgumentException(
+                "Não é possível excluir este cliente, pois ele possui locações registradas."
+            );
+        }
+
+        if (!clienteDAO.excluir(idCliente)) {
+            throw new IllegalArgumentException(
+                "Não foi possível excluir o cliente."
+            );
+        }
     }
 
     // Validar os dados do cliente
