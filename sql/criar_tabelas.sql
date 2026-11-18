@@ -27,3 +27,22 @@ CREATE TABLE locacao (
     FOREIGN KEY (id_veiculo) REFERENCES veiculos(id_veiculo),
     FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente)
 );
+
+CREATE TABLE faturamento (
+    id_faturamento SERIAL PRIMARY KEY,
+    id_locacao INT NOT NULL,
+    valor_diaria NUMERIC(10,2) NOT NULL,
+    qtd_diarias INT NOT NULL,
+    valor_total NUMERIC(10,2) NOT NULL,
+    forma_pagamento VARCHAR(50) NOT NULL,
+    status_pagamento VARCHAR(30) NOT NULL DEFAULT 'PENDENTE',
+    dt_pagamento DATE NULL,
+
+    CHECK (valor_diaria >= 0),
+    CHECK (qtd_diarias > 0),
+    CHECK (valor_total >= 0),
+    CHECK (forma_pagamento IN ('PIX', 'DINHEIRO', 'CARTAO_CREDITO', 'CARTAO_DEBITO')),
+    CHECK (status_pagamento IN ('PENDENTE', 'PAGO', 'CANCELADO')),
+
+    FOREIGN KEY (id_locacao) REFERENCES locacao(id_locacao)
+);
