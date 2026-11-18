@@ -53,7 +53,7 @@ public class TelaPrincipal extends JFrame {
         iconeRelatorio = carregarIcone("relatorio-de-negocios.png", 20);
         iconeSair = carregarIcone("sair.png", 20);
 
-        setTitle("Locadora de Veiculos - Dashboard");
+        setTitle("Velozzi Locadora");
         setSize(1150, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -86,7 +86,9 @@ public class TelaPrincipal extends JFrame {
         menu.setBackground(NAVY);
         menu.setBorder(BorderFactory.createEmptyBorder(28, 14, 24, 14));
 
-        JLabel marca = new JLabel("<html><b style='font-size:15px'>LOCADORA</b><br><span style='font-size:11px'>DE VEICULOS</span></html>");
+        JLabel marca = new JLabel(
+            "<html><b style='font-size:15px'>VELOZZI LOCADORA</b></html>"
+        );
         marca.setIcon(new IconComFundo(iconeLocacao));
         marca.setIconTextGap(8);
         marca.setForeground(Color.WHITE);
