@@ -182,10 +182,10 @@ public final class TelaLocacoes extends JPanel {
             formulario.add(new JLabel("Veículo:"));
             formulario.add(comboVeiculos);
 
-            formulario.add(new JLabel("Início (dd/MM/yyyy):"));
+            formulario.add(new JLabel("Início (dd/mm/aaaa):"));
             formulario.add(inicio);
 
-            formulario.add(new JLabel("Previsão de fim (dd/MM/yyyy):"));
+            formulario.add(new JLabel("Previsão de fim (dd/mm/aaaa):"));
             formulario.add(fim);
 
             int resultado = JOptionPane.showConfirmDialog(
@@ -232,7 +232,7 @@ public final class TelaLocacoes extends JPanel {
         } catch (DateTimeParseException e) {
             ComponentesTela.mostrarErro(
                 this,
-                "Informe as datas no formato dd/MM/yyyy."
+                "Informe as datas no formato dd/mm/aaaa."
             );
 
         } catch (IllegalArgumentException e) {
@@ -268,7 +268,7 @@ public final class TelaLocacoes extends JPanel {
 
         String dataInformada = JOptionPane.showInputDialog(
             this,
-            "Informe a data de devolução (dd/MM/yyyy):",
+            "Informe a data de devolução (dd/mm/aaaa):",
             FORMATO_DATA.format(LocalDate.now())
         );
 
@@ -296,7 +296,7 @@ public final class TelaLocacoes extends JPanel {
         } catch (DateTimeParseException e) {
             ComponentesTela.mostrarErro(
                 this,
-                "Informe a data no formato dd/MM/yyyy."
+                "Informe a data no formato dd/mm/aaaa."
             );
 
         } catch (IllegalArgumentException e) {
