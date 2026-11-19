@@ -1,3 +1,11 @@
+-- Inserindo usuário administrador
+INSERT INTO usuarios (nome_usuario, senha_usuario)
+VALUES (
+    'admin',
+    'pbkdf2$210000$tcK7pbje19qqYamuc7PF5g==$5tgCHVny6yLkVisK+jpGGLlTImn4J2E7q9LATXqoSYc='
+);
+
+
 -- Inserindo clientes
 INSERT INTO cliente (nome_cliente, email_cliente, telefone_cliente)
 VALUES
