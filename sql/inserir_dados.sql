@@ -1,4 +1,6 @@
 -- Inserindo usuário administrador
+-- Login: admin
+-- Senha: Admin@123
 INSERT INTO usuarios (nome_usuario, senha_usuario)
 VALUES (
     'admin',
