@@ -213,7 +213,12 @@ public class TelaPrincipal extends JFrame {
         cards.add(criarCard(iconeVeiculo, totalVeiculos, "Veículos cadastrados", BLUE));
         cards.add(criarCard(iconeCliente, totalClientes, "Clientes cadastrados", new Color(42, 150, 88)));
         cards.add(criarCard(iconeLocacao, totalLocacoes, "Locações efetuadas", new Color(221, 145, 25)));
-        cards.add(criarCard(new JLabel("$", SwingConstants.CENTER), totalFaturamentoMes, "Faturamento (mês)", new Color(126, 70, 185)));
+        cards.add(criarCard(
+            iconeFaturamento,
+            totalFaturamentoMes,
+            "Faturamento (mês)",
+            new Color(126, 70, 185)
+        ));
         painel.add(cards, BorderLayout.NORTH);
         return painel;
     }
