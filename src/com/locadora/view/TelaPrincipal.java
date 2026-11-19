@@ -123,7 +123,7 @@ public class TelaPrincipal extends JFrame {
         JButton sair = new JButton("Sair", new IconComFundo(iconeSair));
         sair.setIconTextGap(8);
         estilizarBotaoMenu(sair, false);
-        sair.addActionListener(evento -> System.exit(0));
+        sair.addActionListener(evento -> sairDoSistema());
         menu.add(sair, BorderLayout.SOUTH);
         return menu;
     }
@@ -325,6 +325,29 @@ public class TelaPrincipal extends JFrame {
             g2.fillRoundRect(x, y, getIconWidth(), getIconHeight(), 8, 8);
             icone.paintIcon(componente, g2, x + PADDING, y + PADDING);
             g2.dispose();
+        }
+    }
+
+    
+    // Confirmar saída e retornar para a tela de login
+    private void sairDoSistema() {
+
+        int opcao = JOptionPane.showConfirmDialog(
+            this,
+            "Tem certeza que deseja sair do sistema?",
+            "Confirmar saída",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (opcao == JOptionPane.YES_OPTION) {
+
+            // Fecha a tela principal
+            dispose();
+
+            // Retorna para a tela de login
+            TelaLogin telaLogin = new TelaLogin();
+            telaLogin.setVisible(true);
         }
     }
 }
