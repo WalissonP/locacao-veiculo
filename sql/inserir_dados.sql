@@ -26,3 +26,18 @@ INSERT INTO locacao (
 VALUES
     (1, 1, '2026-11-01', '2026-11-05', '2026-11-05', 'DISPONIVEL'),
     (2, 2, '2026-11-08', '2026-11-12', NULL, 'LOCADO');
+
+
+-- Inserindo faturamentos
+INSERT INTO faturamento (
+    id_locacao,
+    valor_diaria,
+    qtd_diarias,
+    valor_total,
+    forma_pagamento,
+    status_pagamento,
+    dt_pagamento
+)
+VALUES
+    (1, 100.00, 4, 400.00, 'PIX', 'PAGO', '2026-11-05'),
+    (2, 120.00, 4, 480.00, 'CARTAO_CREDITO', 'PENDENTE', NULL);

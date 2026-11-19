@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+
 public class TelaPrincipal extends JFrame {
     private static final Color NAVY = new Color(29, 47, 65);
     private static final Color BLUE = new Color(36, 91, 190);
@@ -36,28 +37,34 @@ public class TelaPrincipal extends JFrame {
     private final JLabel totalLocacoes = new JLabel("0");
     private final JLabel totalFaturamentoMes = new JLabel("R$ 0,00");
     private final List<JButton> botoesMenu = new ArrayList<>();
+    private final Icon iconeLogo;
     private final Icon iconePainel;
     private final Icon iconeVeiculo;
     private final Icon iconeVeiculoMenu;
     private final Icon iconeCliente;
     private final Icon iconeLocacao;
     private final Icon iconeRelatorio;
+    private final Icon iconeFaturamento;
     private final Icon iconeSair;
     private TelaVeiculos telaVeiculos;
     private TelaClientes telaClientes;
     private TelaLocacoes telaLocacoes;
     private TelaFaturamento telaFaturamento;
     private TelaRelatorios telaRelatorios;
+    
 
     public TelaPrincipal() {
+        iconeLogo = carregarIcone("logo.png", 40);
         iconePainel = carregarIcone("painel.png", 20);
         iconeVeiculo = carregarIcone("carros.png", 32);
         iconeVeiculoMenu = carregarIcone("carros.png", 20);
         iconeCliente = carregarIcone("cliente.png", 20);
         iconeLocacao = carregarIcone("locacao.png", 20);
         iconeRelatorio = carregarIcone("relatorio-de-negocios.png", 20);
+        iconeFaturamento = carregarIcone("faturamento.png", 20);
         iconeSair = carregarIcone("sair.png", 20);
 
+        setIconImage(new ImageIcon("assets/imagens/logo.png").getImage());
         setTitle("Velozzi Locadora");
         setSize(1150, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,9 +103,11 @@ public class TelaPrincipal extends JFrame {
         JLabel marca = new JLabel(
             "<html><b style='font-size:15px'>VELOZZI LOCADORA</b></html>"
         );
-        marca.setIcon(new IconComFundo(iconeLocacao));
+
+        marca.setIcon(iconeLogo);
         marca.setIconTextGap(8);
         marca.setForeground(Color.WHITE);
+
         menu.add(marca, BorderLayout.NORTH);
 
         JPanel itens = new JPanel(new GridLayout(6, 1, 0, 8));
@@ -107,7 +116,7 @@ public class TelaPrincipal extends JFrame {
         itens.add(criarBotaoMenu("Veículos", iconeVeiculoMenu, 1, "Veículos"));
         itens.add(criarBotaoMenu("Clientes", iconeCliente, 2, "Clientes"));
         itens.add(criarBotaoMenu("Locações", iconeLocacao, 3, "Locações"));
-        itens.add(criarBotaoMenu("Faturamento", iconeRelatorio, 4, "Faturamento"));
+        itens.add(criarBotaoMenu("Faturamento", iconeFaturamento, 4, "Faturamento"));
         itens.add(criarBotaoMenu("Relatórios", iconeRelatorio, 5, "Relatórios"));
         menu.add(itens, BorderLayout.CENTER);
 

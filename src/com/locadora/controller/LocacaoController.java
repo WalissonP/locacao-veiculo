@@ -99,7 +99,7 @@ public class LocacaoController {
 
                 faturamentoDAO.salvar(faturamento, conn);
                 conn.commit();
-            } catch (Exception e) {
+            } catch (SQLException | RuntimeException e) {
                 conn.rollback();
                 throw e;
             } finally {
