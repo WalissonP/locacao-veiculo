@@ -1,13 +1,13 @@
 package com.locadora;
 
-import com.locadora.view.TelaPrincipal;
+import com.locadora.view.TelaLogin;
 
 import javax.swing.SwingUtilities;
 
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            TelaPrincipal tela = new TelaPrincipal();
+            TelaLogin tela = new TelaLogin();
             tela.setVisible(true);
         });
     }
