@@ -1,3 +1,9 @@
+CREATE TABLE usuarios (
+    id_usuario SERIAL PRIMARY KEY,
+    nome_usuario VARCHAR(100) NOT NULL,
+    senha_usuario VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE cliente (
     id_cliente SERIAL PRIMARY KEY,
     nome_cliente VARCHAR(100) NOT NULL,
